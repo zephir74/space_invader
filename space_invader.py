@@ -13,22 +13,19 @@ class Sprite(pygame.sprite.Sprite):
     def __init__(self, image, x, y, vel_x, vel_y):
         pygame.sprite.Sprite.__init__(self)
         self.image = image
-        self.x = 400
-        self.y = 520
-        self.vel_x = 0
-        self.vel_y = 0
+        self.x = x
+        self.y = y
+        self.vel_x = vel_x
+        self.vel_y = vel_y
 
 class Shot(Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        Sprite.__init__(self)
-        self.image = pygame.image.load(os.path.join("resources/shot.png")).convert_alpha()
+    def __init__(self, player):
+        rect = player.image.get_rect()
+        Sprite.__init__(self, pygame.image.load(os.path.join("resources/shot.png")).convert_alpha(), rect.midtop.x, rect.midtop.y, 0, 0)
 
 class Player(Sprite):
     def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        Sprite.__init__(self)
-        self.image = pygame.image.load(os.path.join("resources/ship.png")).convert_alpha()
+        Sprite.__init__(self, pygame.image.load(os.path.join("resources/ship.png")).convert_alpha(), 400, 520, 0, 0)
 
 print()
 print("Press any key to start")
@@ -40,18 +37,10 @@ pygame.init()
 w, h = 850, 600
 screen = pygame.display.set_mode((w, h))
 pygame.display.set_caption('Space Invader')
-screen.fill(black)
-
-background = pygame.image.load(os.path.join("resources/background.png"))
-screen.blit(background, (0, 0))
-
-x, y = 400, 500
-shot_y = y
 
 fps = pygame.time.Clock()
 
 ship = Player()
-w_ship, h_ship = ship.get_size()
 
 all_sprites = pygame.sprite.Group()
 
@@ -63,19 +52,12 @@ while running:
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_q]:
-            screen.blit(background, (0, 0))
-            x -= 7
+            ship.vel_x -= 7
         if keys[pygame.K_f]:
-            screen.blit(background, (0, 0))
-            x += 7
+            ship.vel_x += 7
         if keys[pygame.K_SPACE]:
-            all_sprites.update()
-            screen.blit(background, (0, 0))
-            shot = Shot()
+            shot = Shot(ship)
             all_sprites.add(shot)
-            all_sprites.draw(screen)
-        
-        screen.blit(ship, (x, y))
     
     fps.tick(60)
     pygame.display.update()
