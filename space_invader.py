@@ -13,19 +13,23 @@ class Sprite(pygame.sprite.Sprite):
     def __init__(self, image, x, y, vel_x, vel_y):
         pygame.sprite.Sprite.__init__(self)
         self.image = image
-        self.x = x
-        self.y = y
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
         self.vel_x = vel_x
         self.vel_y = vel_y
 
-class Shot(Sprite):
-    def __init__(self, player):
-        rect = player.image.get_rect()
-        Sprite.__init__(self, pygame.image.load(os.path.join("resources/shot.png")).convert_alpha(), rect.midtop.x, rect.midtop.y, 0, 0)
+    def update(self):
+        self.rect.x += self.vel_x
+        self.rect.y += self.vel_y
 
 class Player(Sprite):
     def __init__(self):
         Sprite.__init__(self, pygame.image.load(os.path.join("resources/ship.png")).convert_alpha(), 400, 520, 0, 0)
+
+class Shot(Sprite):
+    def __init__(self, player):
+        Sprite.__init__(self, pygame.image.load(os.path.join("resources/shot.png")).convert_alpha(), player.rect.midtop[0], player.rect.midtop[1], 0, -1)
 
 print()
 print("Press any key to start")
@@ -35,14 +39,15 @@ black = (0, 0, 0)
 pygame.init()
 
 w, h = 850, 600
-screen = pygame.display.set_mode((w, h))
+screen = pygame.display.set_mode(size=(w, h), vsync=1)
 pygame.display.set_caption('Space Invader')
 
 fps = pygame.time.Clock()
 
-ship = Player()
-
 all_sprites = pygame.sprite.Group()
+
+ship = Player()
+all_sprites.add(ship)
 
 running = True
 while running:
@@ -50,15 +55,21 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_q]:
-            ship.vel_x -= 7
-        if keys[pygame.K_f]:
-            ship.vel_x += 7
-        if keys[pygame.K_SPACE]:
-            shot = Shot(ship)
-            all_sprites.add(shot)
-    
+        if event.type == pygame.KEYUP:
+            ship.vel_x = 0
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                ship.vel_x = -5
+            if event.key == pygame.K_RIGHT:
+                ship.vel_x = 5
+            if event.key == pygame.K_SPACE:
+                shot = Shot(ship)
+                all_sprites.add(shot)
+
+    screen.fill(black)
+    all_sprites.update()
+    all_sprites.draw(screen)
     fps.tick(60)
     pygame.display.update()
 
