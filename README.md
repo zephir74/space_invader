@@ -14,4 +14,4 @@ Simply start the `gui.py`, and you should have a launcher for the game
 ## Controls
 
 Left / right : arrows
-Shoot : space bar
+\nShoot : space bar
