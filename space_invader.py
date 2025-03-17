@@ -84,8 +84,6 @@ w_shot = laser.get_width()
 enemy_event = pygame.event.custom_type()
 pygame.time.set_timer(enemy_event, 750)
 
-score = 0
-
 running = True
 while running:
     for event in pygame.event.get():
