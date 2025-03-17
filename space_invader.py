@@ -40,11 +40,12 @@ class Shot(Sprite):
 
 class Enemy(Sprite):
     def __init__(self):
-        Sprite.__init__(self, pygame.image.load(os.path.join("resources/alien1.png")).convert_alpha(), random.choice(range(10, 850, 10)), 50, 0, 1)
+        Sprite.__init__(self, pygame.image.load(os.path.join("resources/alien1.png")).convert_alpha(), random.choice(range(10, 850, 50)), 50, 0, 1)
 
     def update(self):
         if not self.rect.colliderect(screen_rect):
-            print("\nGame over")
+            print("\nGame over, an alien reached the bottom of the window !\n")
+            print(f"Your score was : {score}")
             exit()
 
         return super().update()
@@ -57,7 +58,7 @@ black = (0, 0, 0)
 pygame.init()
 
 pygame.mixer.init()
-pygame.mixer.music.load('resources/space_invader-epic.mp3')
+pygame.mixer.music.load('resources/sounds/space_invader-epic.mp3')
 pygame.mixer.music.play(-1)
 
 w, h = 850, 600
@@ -81,7 +82,7 @@ w_ship = ship_img.get_width()
 w_shot = laser.get_width()
 
 enemy_event = pygame.event.custom_type()
-pygame.time.set_timer(enemy_event, 500)
+pygame.time.set_timer(enemy_event, 750)
 
 score = 0
 
@@ -117,7 +118,7 @@ while running:
         score += 10
 
     if pygame.sprite.groupcollide(player_group, enemy_group, True, True, collided=None):
-        print("\nGame over")
+        print("\nGame over, you got touched by an alien !\n")
         break
 
     player_group.draw(screen)
@@ -130,5 +131,6 @@ while running:
     pygame.display.update()
 
 print(f"Your score was : {score}")
+
 pygame.quit()
 sys.exit()
