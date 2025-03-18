@@ -1,6 +1,6 @@
 # Description
 
-This is a custom Space Invaders made for Linux systems. For now, it only has 1 alien, but updates are coming
+This is a custom Space Invaders initially made for Linux systems, but it works also on Windows. For now, it only has 1 alien, but updates are coming
 
 # Requirements
 
