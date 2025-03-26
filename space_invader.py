@@ -52,38 +52,38 @@ class Enemy(Sprite):
 
 class Enemy2(Sprite):
     def __init__(self):
-        Sprite.__init__(self, pygame.image.load(os.path.join("resources/alien2.png")).convert_alpha(), random.choice(range(10, 850, 50)), 50, 0, 0)
+        Sprite.__init__(self, pygame.image.load(os.path.join("resources/alien2.png")).convert_alpha(), random.choice(range(10, 850, 50)), 50, random.choice([-1, 1]), 0)
         
     last_y_pos = int()
     executed = False
 
-    def update(self, executed=executed):
-        self.vel_x = 1 
-
+    def update(self):
         if self.rect.x >= 800:
-            print(f"right test {executed}")
+            print(f"right test {self.executed}")
             
-            if not executed:
-                last_y_pos = self.rect.y
-                executed = True
-                print(f"last y pos: {last_y_pos}")
+            if not self.executed:
+                self.executed = True
+                self.last_y_pos = self.rect.y
+                print(f"last y pos: {self.last_y_pos}")
                 self.vel_x = 0
                 self.vel_y = 1
 
-            if self.rect.y - last_y_pos >= 100:
+            if self.rect.y - self.last_y_pos >= 100:
+                self.executed = False
                 self.vel_y = 0
                 self.vel_x = -1
-                    
+
         if self.rect.x <= 50:
-            print(f"left test {executed}")
+            print(f"left test {self.executed}")
             
-            if not executed:
-                executed = True
-                last_y_pos = self.rect.y
+            if not self.executed:
+                self.executed = True
+                self.last_y_pos = self.rect.y
                 self.vel_x = 0
                 self.vel_y = 1
 
-            if self.rect.y - last_y_pos >= 100:
+            if self.rect.y - self.last_y_pos >= 100:
+                self.executed = False
                 self.vel_y = 0
                 self.vel_x = 1
 
