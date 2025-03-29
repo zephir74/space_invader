@@ -5,7 +5,7 @@ import os
 import sys
 import random
 
-score = 490
+score = 0
 
 class Sprite(pygame.sprite.Sprite):
     def __init__(self, image, x, y, vel_x, vel_y):
@@ -58,13 +58,10 @@ class Enemy2(Sprite):
     executed = False
 
     def update(self):
-        if self.rect.x >= 800:
-            print(f"right test {self.executed}")
-            
+        if self.rect.x >= 800:            
             if not self.executed:
                 self.executed = True
                 self.last_y_pos = self.rect.y
-                print(f"last y pos: {self.last_y_pos}")
                 self.vel_x = 0
                 self.vel_y = 1
 
@@ -74,8 +71,6 @@ class Enemy2(Sprite):
                 self.vel_x = -1
 
         if self.rect.x <= 50:
-            print(f"left test {self.executed}")
-            
             if not self.executed:
                 self.executed = True
                 self.last_y_pos = self.rect.y
@@ -88,8 +83,8 @@ class Enemy2(Sprite):
                 self.vel_x = 1
 
         if not self.rect.colliderect(screen_rect):
-            print("\nGame over, an alien reached the bottom of the window !\n")
-            print(f"Your score was : {score}")
+            #print("\nGame over, an alien reached the bottom of the window !\n")
+            #print(f"Your score was : {score}")
             exit()
 
         return super().update()
@@ -99,10 +94,10 @@ print("\nPress any key to start")
 black = (0, 0, 0)
 
 pygame.init()
-
+pygame.font.init()
 pygame.mixer.init()
-pygame.mixer.music.load("resources/sounds/space_invader-epic.mp3")
-pygame.mixer.music.play(-1)
+
+pygame.mixer.Channel(0).play(pygame.mixer.Sound("resources/sounds/space_invader-epic.mp3"))
 
 w, h = 850, 600
 screen = pygame.display.set_mode(size=(w, h), vsync=1)
@@ -125,13 +120,12 @@ w_ship = ship_img.get_width()
 w_shot = laser.get_width()
 
 enemy_event = pygame.event.custom_type()
-pygame.time.set_timer(enemy_event, 2000)
+pygame.time.set_timer(enemy_event, 900)
 
-#enemy2_event = pygame.event.custom_type() 
-#pygame.time.set_timer(enemy2_event, 1200)
+enemy2_event = pygame.event.custom_type() 
+pygame.time.set_timer(enemy2_event, 1500)
 
-alien2 = Enemy2()
-enemy_group.add(alien2)
+policy = pygame.font.SysFont('Comic Sans MS', 32)
 
 running = True
 while running:
@@ -144,21 +138,23 @@ while running:
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                ship.vel_x = -7
+                ship.vel_x = -8
             if event.key == pygame.K_RIGHT:
-                ship.vel_x = 7
+                ship.vel_x = 8
             if event.key == pygame.K_SPACE:
                 shot = Shot(ship)
                 shot.rect.x, shot.rect.y = ship.rect.x - int(w_shot / 2) + int(w_ship / 2), ship.rect.y
                 shots_group.add(shot)
+                pygame.mixer.Channel(1).play(pygame.mixer.Sound("resources/sounds/shoot.mp3"))
+                pygame.mixer.Channel(1).set_volume(1.0)
 
         if event.type == enemy_event:
             alien = Enemy()
             enemy_group.add(alien)
 
-        #if score >= 500 and event.type == enemy2_event:
-        #    alien2 = Enemy2()
-        #    enemy_group.add(alien2)
+        if score >= 500 and event.type == enemy2_event:
+            alien2 = Enemy2()
+            enemy_group.add(alien2)
 
     screen.fill(black)
 
@@ -166,9 +162,14 @@ while running:
     shots_group.update(screen_rect)
 
     if pygame.sprite.groupcollide(shots_group, enemy_group, True, True, collided=None):
+        pygame.mixer.Channel(2).play(pygame.mixer.Sound("resources/sounds/alien_down.wav"))
+        pygame.mixer.Channel(2).set_volume(0.3)
         score += 10
 
     if pygame.sprite.groupcollide(player_group, enemy_group, True, True, collided=None):
+        #game_over = pygame.image.load(os.path.join("resources/game_over.jpg"))
+        #screen.blit(game_over, (0, 0))
+        #time.sleep(5)
         print("\nGame over, you got touched by an alien !\n")
         break
 
@@ -177,6 +178,9 @@ while running:
 
     enemy_group.update()
     enemy_group.draw(screen)
+
+    show_score = policy.render(f"Score : {score}", True, (255, 255, 255))
+    screen.blit(show_score, (10, 10))
 
     fps.tick(60)
     pygame.display.update()
