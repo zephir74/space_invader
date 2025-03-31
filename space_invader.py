@@ -45,8 +45,11 @@ class Enemy(Sprite):
 
     def update(self):
         if not self.rect.colliderect(screen_rect):
+            pygame.mixer.stop()
             screen.blit(game_over_bottom, (0, 0))
             pygame.display.update()
+            pygame.mixer.Channel(3).play(pygame.mixer.Sound("resources/sounds/player_down.mp3"))
+            pygame.mixer.Channel(3).set_volume(1.0)
             time.sleep(3)
             exit()
 
@@ -85,8 +88,11 @@ class Enemy2(Sprite):
                 self.vel_x = 1
 
         if not self.rect.colliderect(screen_rect):
+            pygame.mixer.stop()
             screen.blit(game_over_bottom, (0, 0))
             pygame.display.update()
+            pygame.mixer.Channel(3).play(pygame.mixer.Sound("resources/sounds/player_down.mp3"))
+            pygame.mixer.Channel(3).set_volume(1.0)
             time.sleep(3)
             exit()
 
@@ -172,8 +178,11 @@ while running:
         score += 10
 
     if pygame.sprite.groupcollide(player_group, enemy_group, True, True, collided=None):
+        pygame.mixer.stop()
         screen.blit(game_over_touched, (0, 0))
         pygame.display.update()
+        pygame.mixer.Channel(3).play(pygame.mixer.Sound("resources/sounds/player_down.mp3"))
+        pygame.mixer.Channel(3).set_volume(1.0)
         time.sleep(3)
         break
 
