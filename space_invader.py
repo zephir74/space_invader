@@ -4,6 +4,7 @@ import pygame
 import os
 import sys
 import random
+import time
 
 score = 0
 
@@ -44,8 +45,9 @@ class Enemy(Sprite):
 
     def update(self):
         if not self.rect.colliderect(screen_rect):
-            print("\nGame over, an alien reached the bottom of the window !\n")
-            print(f"Your score was : {score}")
+            screen.blit(game_over_bottom, (0, 0))
+            pygame.display.update()
+            time.sleep(3)
             exit()
 
         return super().update()
@@ -83,8 +85,9 @@ class Enemy2(Sprite):
                 self.vel_x = 1
 
         if not self.rect.colliderect(screen_rect):
-            #print("\nGame over, an alien reached the bottom of the window !\n")
-            #print(f"Your score was : {score}")
+            screen.blit(game_over_bottom, (0, 0))
+            pygame.display.update()
+            time.sleep(3)
             exit()
 
         return super().update()
@@ -126,6 +129,8 @@ enemy2_event = pygame.event.custom_type()
 pygame.time.set_timer(enemy2_event, 1500)
 
 policy = pygame.font.SysFont('Comic Sans MS', 32)
+game_over_bottom = pygame.image.load(os.path.join("resources/game_over_bottom.jpg"))
+game_over_touched = pygame.image.load(os.path.join("resources/game_over_touched.jpg"))
 
 running = True
 while running:
@@ -167,10 +172,9 @@ while running:
         score += 10
 
     if pygame.sprite.groupcollide(player_group, enemy_group, True, True, collided=None):
-        #game_over = pygame.image.load(os.path.join("resources/game_over.jpg"))
-        #screen.blit(game_over, (0, 0))
-        #time.sleep(5)
-        print("\nGame over, you got touched by an alien !\n")
+        screen.blit(game_over_touched, (0, 0))
+        pygame.display.update()
+        time.sleep(3)
         break
 
     player_group.draw(screen)
@@ -184,8 +188,6 @@ while running:
 
     fps.tick(60)
     pygame.display.update()
-
-print(f"Your score was : {score}")
 
 pygame.quit()
 sys.exit()
