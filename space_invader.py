@@ -47,6 +47,8 @@ class Enemy(Sprite):
         if not self.rect.colliderect(screen_rect):
             pygame.mixer.stop()
             screen.blit(game_over_bottom, (0, 0))
+            show_score = policy.render(f"Your score was : {score}", True, (255, 255, 255))
+            screen.blit(show_score, (0, 0))
             pygame.display.update()
             pygame.mixer.Channel(3).play(pygame.mixer.Sound("resources/sounds/player_down.mp3"))
             pygame.mixer.Channel(3).set_volume(1.0)
@@ -90,6 +92,8 @@ class Enemy2(Sprite):
         if not self.rect.colliderect(screen_rect):
             pygame.mixer.stop()
             screen.blit(game_over_bottom, (0, 0))
+            show_score = policy.render(f"Your score was : {score}", True, (255, 255, 255))
+            screen.blit(show_score, (0, 0))
             pygame.display.update()
             pygame.mixer.Channel(3).play(pygame.mixer.Sound("resources/sounds/player_down.mp3"))
             pygame.mixer.Channel(3).set_volume(1.0)
@@ -193,7 +197,7 @@ while running:
     enemy_group.draw(screen)
 
     show_score = policy.render(f"Score : {score}", True, (255, 255, 255))
-    screen.blit(show_score, (10, 10))
+    screen.blit(show_score, (0, 0))
 
     fps.tick(60)
     pygame.display.update()
