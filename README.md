@@ -1,6 +1,6 @@
 # Description
 
-This is a custom Space Invaders initially made for Linux systems, but it works also on Windows. For now, it only has 1 alien, but updates are coming
+This is a custom Space Invaders initially made for Linux and Windows systems. It has 2 aliens and custom death screens (depends on the reason of the mission failure)
 
 # Requirements
 

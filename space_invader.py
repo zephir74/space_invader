@@ -184,6 +184,8 @@ while running:
     if pygame.sprite.groupcollide(player_group, enemy_group, True, True, collided=None):
         pygame.mixer.stop()
         screen.blit(game_over_touched, (0, 0))
+        show_score = policy.render(f"Your score was : {score}", True, (255, 255, 255))
+        screen.blit(show_score, (0, 0))
         pygame.display.update()
         pygame.mixer.Channel(3).play(pygame.mixer.Sound("resources/sounds/player_down.mp3"))
         pygame.mixer.Channel(3).set_volume(1.0)
