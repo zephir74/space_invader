@@ -1,6 +1,8 @@
 # Description
 
-This is a custom Space Invaders initially made for Linux and Windows systems. It has 2 aliens and custom death screens (depends on the reason of the mission failure)
+Soldier, your mission is to defend the universe against unknown aliens, now get into your ship, and destroy them all !
+
+This is a custom Space Invaders initially made for Linux and Windows systems. It has 2 aliens and custom death screens (depends on the reason of the mission failure). Your spaceship can upgrade when your reach 1000 of score.
 
 # Requirements
 

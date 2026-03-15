@@ -29,6 +29,13 @@ class Player(Sprite):
     def update(self):
         return super().update()
 
+class Player2(Sprite):
+    def __init__(self):
+        Sprite.__init__(self, pygame.image.load(os.path.join("resources/ship2.png")).convert_alpha(), 400, 520, 0, 0) # class for 2nd ship
+
+    def update(self):
+        return super().update()
+
 class Shot(Sprite):
     def __init__(self, player):
         Sprite.__init__(self, pygame.image.load(os.path.join("resources/shot.png")).convert_alpha(), player.rect.midtop[0], player.rect.midtop[1], 0, -10)
@@ -102,8 +109,6 @@ class Enemy2(Sprite):
 
         return super().update()
 
-print("\nPress any key to start")
-
 black = (0, 0, 0)
 
 pygame.init()
@@ -143,6 +148,8 @@ game_over_bottom = pygame.image.load(os.path.join("resources/game_over_bottom.jp
 game_over_touched = pygame.image.load(os.path.join("resources/game_over_touched.jpg"))
 
 running = True
+new_ship = False
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -162,7 +169,7 @@ while running:
                 shots_group.add(shot)
                 pygame.mixer.Channel(1).play(pygame.mixer.Sound("resources/sounds/shoot.mp3"))
                 pygame.mixer.Channel(1).set_volume(1.0)
-
+                
         if event.type == enemy_event:
             alien = Enemy()
             enemy_group.add(alien)
@@ -171,6 +178,12 @@ while running:
             alien2 = Enemy2()
             enemy_group.add(alien2)
 
+        if score == 1000 and new_ship != True: # upgrade ship
+            new_ship = True
+            player_group.remove(ship)
+            ship = Player2()
+            player_group.add(ship)
+        
     screen.fill(black)
 
     player_group.update()
@@ -183,7 +196,7 @@ while running:
 
     if pygame.sprite.groupcollide(player_group, enemy_group, True, True, collided=None):
         pygame.mixer.stop()
-        screen.blit(game_over_touched, (0, 0))
+        screen.blit(game_over_bottom, (0, 0))
         show_score = policy.render(f"Your score was : {score}", True, (255, 255, 255))
         screen.blit(show_score, (0, 0))
         pygame.display.update()
