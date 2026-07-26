@@ -5,8 +5,9 @@ import os
 import sys
 import random
 import time
+import threading
 
-score = 0
+score = 980
 
 class Sprite(pygame.sprite.Sprite):
     def __init__(self, image, x, y, vel_x, vel_y):
@@ -46,6 +47,16 @@ class Shot(Sprite):
 
         return super().update()
 
+class Shot2(Sprite):
+    def __init__(self, player):
+        Sprite.__init__(self, pygame.image.load(os.path.join("resources/shot2.png")).convert_alpha(), player.rect.midtop[0], player.rect.midtop[1], 0, -10)
+
+    def update(self, screen_rect):
+        if not self.rect.colliderect(screen_rect):
+            self.kill()
+
+        return super().update()
+    
 class Enemy(Sprite):
     def __init__(self):
         Sprite.__init__(self, pygame.image.load(os.path.join("resources/alien1.png")).convert_alpha(), random.choice(range(10, 850, 50)), 50, 0, 1)
@@ -108,7 +119,7 @@ class Enemy2(Sprite):
             exit()
 
         return super().update()
-
+    
 black = (0, 0, 0)
 
 pygame.init()
@@ -164,11 +175,27 @@ while running:
             if event.key == pygame.K_RIGHT:
                 ship.vel_x = 8
             if event.key == pygame.K_SPACE:
-                shot = Shot(ship)
-                shot.rect.x, shot.rect.y = ship.rect.x - int(w_shot / 2) + int(w_ship / 2), ship.rect.y
-                shots_group.add(shot)
-                pygame.mixer.Channel(1).play(pygame.mixer.Sound("resources/sounds/shoot.mp3"))
-                pygame.mixer.Channel(1).set_volume(1.0)
+                if score < 1000:
+                    shot = Shot(ship)
+                    shot.rect.x, shot.rect.y = ship.rect.x - int(w_shot / 2) + int(w_ship / 2), ship.rect.y
+                    shots_group.add(shot)
+                    pygame.mixer.Channel(1).play(pygame.mixer.Sound("resources/sounds/shoot.mp3"))
+                    pygame.mixer.Channel(1).set_volume(1.0)
+                else:
+                    shot_left = Shot2(ship)
+                    shot_middle = Shot2(ship)
+                    shot_right = Shot2(ship)
+                    
+                    shot_left.rect.x, shot_left.rect.y = ship.rect.x - int(w_shot / 2) + int(w_ship / 2) - 40, ship.rect.y
+                    shot_middle.rect.x, shot_middle.rect.y = ship.rect.x - int(w_shot / 2) + int(w_ship / 2), ship.rect.y
+                    shot_right.rect.x, shot_right.rect.y = ship.rect.x - int(w_shot / 2) + int(w_ship / 2) + 40, ship.rect.y
+                    
+                    shots_group.add(shot_left)
+                    shots_group.add(shot_middle)
+                    shots_group.add(shot_right)
+                    
+                    pygame.mixer.Channel(1).play(pygame.mixer.Sound("resources/sounds/shoot.mp3"))
+                    pygame.mixer.Channel(1).set_volume(1.0)
                 
         if event.type == enemy_event:
             alien = Enemy()
